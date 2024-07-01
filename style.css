@@ -1,0 +1,143 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans:wght@400;600&display=swap');
+
+/* General Styles */
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-image: url('https://i.pinimg.com/564x/35/24/f6/3524f6feb9b787de92f0a5a5c928735b.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #444;
+}
+
+.main {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Lobster', cursive;
+    color: #ff6f61;
+    font-size: 2.5em;
+    margin-bottom: 1em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus {
+    border-color: #ff6f61;
+    box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
+}
+
+.wrap {
+    margin-top: 20px;
+}
+
+button[type="submit"] {
+    background-color: #ff6f61;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #ff4f41;
+    transform: translateY(-2px);
+}
+
+h2 {
+    font-family: 'Lobster', cursive;
+    color: #ff6f61;
+    margin-top: 2em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+ol {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: rgba(255, 255, 255, 0.9);
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-icon, .bell-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 1.2em;
+}
+
+.delete-icon {
+    color: red;
+}
+
+.bell-icon {
+    color: green;
+}
+
+@media (max-width: 600px) {
+    .main {
+          max-width: 100%;
+          padding: 10px;
+    }
+
+    input[type="text"],
+    input[type="date"] {
+          width: calc(100% - 10px);
+    }
+
+    button[type="submit"] {
+          width: 100%;
+          padding: 10px 0;
+    }
+
+    li {
+          flex-direction: column;
+          align-items: flex-start;
+    }
+
+    .delete-icon, .bell-icon {
+          font-size: 1em;
+          margin-left: 0;
+          margin-top: 5px;
+    }
+}

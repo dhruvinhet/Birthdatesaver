@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+      <title>Welcome</title>
+      <link rel="stylesheet" href="style.css">
+      <style>
+            body {
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                  align-items: center;
+                  height: 100vh;
+                  margin: 0;
+                  font-family: Arial, sans-serif;
+            }
+            h1 {
+                  font-size: 5em;
+            }
+            ol {
+                  list-style-type: none;
+                  padding: 0;
+            }
+            li {
+                  font-size: 1.5em;
+            }
+            button {
+                  margin-top: 20px;
+                  padding: 10px 20px;
+                  font-size: 1.5em;
+                  cursor: pointer;
+            }
+      </style>
+</head>
+
+<body>
+      
+      <ol id="dataList"></ol>
+      <button onclick="goBack()">Back</button>
+
+      <script>
+            function displayData() {
+                  var users = JSON.parse(localStorage.getItem('users')) || {};
+                  var loggedInUser = localStorage.getItem('loggedInUser');
+                  var user = users[loggedInUser];
+                  var dataList = document.getElementById('dataList');
+                  dataList.innerHTML = '';
+
+                  if (user) {
+                        user.details.forEach(function(detail, index) {
+                              var listItem = document.createElement('li');
+                              var formattedDate = formatDate(detail.birthdate);
+                              listItem.textContent = (index + 1) + '. Name: ' + detail.name + ', Birthdate: ' + formattedDate;
+                              dataList.appendChild(listItem);
+                        });
+                  }
+            }
+
+            function formatDate(dateString) {
+                  var date = new Date(dateString);
+                  var options = { year: 'numeric', month: 'long', day: 'numeric' };
+                  return date.toLocaleDateString(undefined, options);
+            }
+
+            function goBack() {
+                  window.location.href = 'details.html';
+            }
+
+            window.onload = displayData;
+      </script>
+</body>
+
+</html>

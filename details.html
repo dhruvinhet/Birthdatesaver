@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+      <title>User Details</title>
+      <link rel="stylesheet" href="style.css">
+      <style>
+            .delete-icon {
+                  cursor: pointer;
+                  color: red;
+                  margin-left: 10px;
+            }
+            .bell-icon {
+                  cursor: pointer;
+                  color: green;
+                  margin-left: 10px;
+            }
+      </style>
+</head>
+
+<body>
+      <div class="main">
+            <h1>User Details</h1>
+            <form id="detailsForm">
+                  <label for="name">
+                        Name:
+                  </label>
+                  <input type="text" 
+                         id="name" 
+                         name="name" 
+                         placeholder="Enter your Name" required>
+
+                  <label for="birthdate">
+                        Birthdate:
+                  </label>
+                  <input type="date"
+                         id="birthdate" 
+                         name="birthdate"
+                         placeholder="Enter your Birthdate" required>
+
+                  <div class="wrap">
+                        <button type="submit">
+                              Save
+                        </button>
+                  </div>
+            </form>
+
+            <div id="upcomingBirthdays">
+                  <h2>Upcoming Birthdays</h2>
+                  <ol id="upcomingList"></ol>
+            </div>
+
+            <div id="savedData">
+                  <h2>Saved Data</h2>
+                  <ol id="dataList"></ol>
+            </div>
+      </div>
+
+      <script>
+            document.getElementById('detailsForm').addEventListener('submit', function(event) {
+                  event.preventDefault();
+                  var name = document.getElementById('name').value;
+                  var birthdate = document.getElementById('birthdate').value;
+
+                  var users = JSON.parse(localStorage.getItem('users')) || {};
+                  var loggedInUser = localStorage.getItem('loggedInUser');
+                  var user = users[loggedInUser];
+
+                  if (user) {
+                        user.details.push({ name: name, birthdate: birthdate });
+                        users[loggedInUser] = user;
+                        localStorage.setItem('users', JSON.stringify(users));
+                        displayData();
+                        window.location.href = 'welcome.html';
+                  } else {
+                        alert('User not found!');
+                  }
+            });
+
+            function displayData() {
+                  var users = JSON.parse(localStorage.getItem('users')) || {};
+                  var loggedInUser = localStorage.getItem('loggedInUser');
+                  var user = users[loggedInUser];
+                  var dataList = document.getElementById('dataList');
+                  var upcomingList = document.getElementById('upcomingList');
+                  dataList.innerHTML = '';
+                  upcomingList.innerHTML = '';
+
+                  if (user) {
+                        user.details.forEach(function(detail, index) {
+                              var listItem = document.createElement('li');
+                              var formattedDate = formatDate(detail.birthdate);
+                              var daysLeft = calculateDaysLeft(detail.birthdate);
+                              var age = calculateAge(detail.birthdate);
+
+                              listItem.innerHTML = (index + 1) + '. Name: ' + detail.name + ', Birthdate: ' + formattedDate + ', ' + age + ' years old' +
+                                    ' <span class="delete-icon" onclick="deleteData(' + index + ')">&#x1F5D1;</span>';
+
+                              if (daysLeft === 1) {
+                                    listItem.innerHTML += ' <span class="bell-icon">&#x1F514;</span>';
+                                    upcomingList.appendChild(listItem);
+                              } else {
+                                    dataList.appendChild(listItem);
+                              }
+                        });
+                  }
+            }
+
+            function formatDate(dateString) {
+                  var date = new Date(dateString);
+                  var options = { year: 'numeric', month: 'long', day: 'numeric' };
+                  return date.toLocaleDateString(undefined, options);
+            }
+
+            function calculateDaysLeft(dateString) {
+                  var today = new Date();
+                  var birthdate = new Date(dateString);
+                  birthdate.setFullYear(today.getFullYear());
+
+                  if (birthdate < today) {
+                        birthdate.setFullYear(today.getFullYear() + 1);
+                  }
+
+                  var difference = birthdate - today;
+                  var daysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
+                  return daysLeft;
+            }
+
+            function calculateAge(dateString) {
+                  var today = new Date();
+                  var birthdate = new Date(dateString);
+                  var age = today.getFullYear() - birthdate.getFullYear();
+                  var m = today.getMonth() - birthdate.getMonth();
+
+                  if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+                        age--;
+                  }
+
+                  return age;
+            }
+
+            function deleteData(index) {
+                  if (confirm('Are you sure you want to delete this data?')) {
+                        var users = JSON.parse(localStorage.getItem('users')) || {};
+                        var loggedInUser = localStorage.getItem('loggedInUser');
+                        var user = users[loggedInUser];
+
+                        if (user) {
+                              user.details.splice(index, 1);
+                              users[loggedInUser] = user;
+                              localStorage.setItem('users', JSON.stringify(users));
+                              displayData();
+                        }
+                  }
+            }
+
+            function checkForUpcomingBirthdays() {
+                  var users = JSON.parse(localStorage.getItem('users')) || {};
+                  var loggedInUser = localStorage.getItem('loggedInUser');
+                  var user = users[loggedInUser];
+
+                  if (user && Notification.permission === "granted") {
+                        var today = new Date();
+                        var tomorrow = new Date(today);
+                        tomorrow.setDate(today.getDate() + 1);
+                        var tomorrowMonth = tomorrow.getMonth();
+                        var tomorrowDay = tomorrow.getDate();
+
+                        user.details.forEach(function(detail) {
+                              var birthdate = new Date(detail.birthdate);
+                              if (birthdate.getMonth() === tomorrowMonth && birthdate.getDate() === tomorrowDay) {
+                                    new Notification('Upcoming Birthday!', {
+                                          body: 'Tomorrow is ' + detail.name + "'s birthday!"
+                                    });
+                              }
+                        });
+                  }
+            }
+
+            function requestNotificationPermission() {
+                  if (Notification.permission !== "granted") {
+                        Notification.requestPermission().then(permission => {
+                              if (permission === "granted") {
+                                    checkForUpcomingBirthdays();
+                              }
+                        });
+                  } else {
+                        checkForUpcomingBirthdays();
+                  }
+            }
+
+            window.onload = function() {
+                  displayData();
+                  requestNotificationPermission();
+            };
+      </script>
+</body>
+
+</html>

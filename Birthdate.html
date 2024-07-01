@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+      <title>Birthdate Saver</title>
+      <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+      <div class="main">
+            <h1>Welcome To Birthdate Saver</h1>
+            <h3>Enter your login credentials</h3>
+            <form id="loginForm">
+                  <label for="first">
+                        Username:
+                  </label>
+                  <input type="text" 
+                         id="first" 
+                         name="first" 
+                         placeholder="Enter your Username" required>
+
+                  <label for="password">
+                        Password:
+                  </label>
+                  <input type="password"
+                         id="password" 
+                         name="password"
+                         placeholder="Enter your Password" required>
+
+                  <div class="wrap">
+                        <button type="submit">
+                              Submit
+                        </button>
+                  </div>
+            </form>
+            <p>Not registered?
+                  <a href="create_account.html"
+                     style="text-decoration: none;">
+                        Create an account
+                  </a>
+            </p>
+      </div>
+
+      <script>
+            document.getElementById('loginForm').addEventListener('submit', function(event) {
+                  event.preventDefault();
+                  var username = document.getElementById('first').value;
+                  var password = document.getElementById('password').value;
+
+                  var users = JSON.parse(localStorage.getItem('users')) || {};
+                  var user = users[username];
+
+                  if (user && user.password === password) {
+                        localStorage.setItem('loggedInUser', username);
+                        window.location.href = 'details.html';
+                  } else {
+                        alert('Invalid credentials!');
+                  }
+            });
+      </script>
+</body>
+
+</html>
